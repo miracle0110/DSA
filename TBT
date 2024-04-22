@@ -1,0 +1,144 @@
+#include <iostream>
+using namespace std;
+
+class node
+{
+    int data;
+    node *rc;
+    node *lc;
+    int rf;
+    int lf;
+
+public:
+    node *root, *header;
+    node()
+    {
+        rf = lf = 0;
+        rc = lc = root = NULL;
+    }
+    void create()
+    {
+        node *curr, *temp;
+        int ans;
+        header = new node;
+        header->lc = header;
+        header->rc = header;
+        do
+        {
+            temp = new node;
+            cout << "enter data=";
+            cin >> temp->data;
+            if (root == NULL)
+            {
+                root = temp;
+                root->lc = header;
+                root->rc = header;
+                header->lc = root;
+                root->rf = 0;
+                root->lf = 0;
+            }
+            else
+            {
+                curr = root;
+                while (1)
+                {
+                    if (temp->data < curr->data)
+                    {
+                        if (curr->lf == 0)
+                        {
+                            temp->lc = curr->lc;
+                            temp->rc = curr;
+                            curr->lc = temp;
+                            curr->lf = 1;
+                            break;
+                        }
+                        else
+                        {
+                            curr = curr->lc;
+                        }
+                    }
+                    if (temp->data > curr->data)
+                    {
+                        if (curr->rf == 0)
+                        {
+                            temp->rc = curr->rc;
+                            temp->lc = curr;
+                            curr->rc = temp;
+                            curr->rf = 1;
+                            break;
+                        }
+                        else
+                        {
+                            curr = curr->rc;
+                        }
+                    }
+                }
+            }
+            cout << "do you want to continue=";
+            cin >> ans;
+        } while (ans == 1);
+    }
+
+    void preorder()
+    {
+        if (root == NULL)
+        {
+            cout << "empty tree";
+        }
+        else
+        {
+            node *t = root;
+            while (t != header)
+            {
+                cout << t->data << "->";
+                if (t->lf == 1)
+                {
+                    t = t->lc;
+                }
+                else
+                {
+                    while (t->rf == 0)
+                    {
+                        t = t->rc;
+                        if (t == header)
+                            break;
+                    }
+                    t=t->rc;
+                }
+            }
+        }
+    }
+    void inorder(){
+        if(root==NULL){
+            cout<<"empty";
+           
+        }
+        else{
+            node*t=root;
+            do{
+            
+            while(t->lf!=0){
+                t=t->lc;
+            }
+            cout<<t->data<<"->";
+            while(t->rf==0){
+                t=t->rc;
+                if(t==header) break;
+
+                cout<<t->data<<"->";
+            }
+            t=t->rc;
+            }while(t!=header);
+        }
+    }
+    
+};
+int main()
+{
+    node obj;
+    obj.create();
+    obj.preorder();
+    cout<<endl;
+    obj.inorder();
+    return 0;
+}
