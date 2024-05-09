@@ -1,126 +1,80 @@
-#include<iostream>
-#include<stack>
-#include<queue>
+
+#include <iostream>
+#include <stdlib.h>
 using namespace std;
 
-struct node {
-    int vertex;
-    node *next;
-}*adj_list[10];
+int cost[10][10], i, j, k, n, qu[10], front, rear, v, visit[10], visited[10];
+int stk[10], top, visit1[10], visited1[10];
 
-class Graph {
-private:
-    int n;
-public:
-    stack<int> s;
-    queue<int> q;
-    void read_graph(struct node *adj_list[10], int n);
-    void create();
-    void dfs();
-    void bfs();
-};
-
-void Graph::read_graph(struct node *adj_list[10], int n) {
-    int i, j;
-    char reply;
-    struct node *p, *c;
-    for (i = 1; i <= n; i++) {
-        for (j = 1; j <= n; j++) {
-            if (i == j)
-                continue;
-            cout << "\n Vertices " << i << " & " << j << " are Adjacent ? (Y/N) :";
-            cin >> reply;
-            if (reply == 'y' || reply == 'Y') {
-                c = new node;
-                c->vertex = j;
-                c->next = NULL;
-                if (adj_list[i] == NULL)
-                    adj_list[i] = c;
-                else {
-                    p = adj_list[i];
-                    while (p->next != NULL)
-                        p = p->next;
-                    p->next = c;
-                }
-            }
-        }
-    }
-}
-
-void Graph::create() {
-    struct node *p;
-    int deg, i;
-    cout << "\n How Many Vertices ? : ";
+int main()
+{
+    int m;
+    cout << "Enter number of vertices : ";
     cin >> n;
-    for (i = 1; i <= n; i++)
-        adj_list[i] = NULL;
-    read_graph(adj_list, n);
-    cout << "\n Vertex \t Degree ";
-    for (i = 1; i <= n; i++) {
-        deg = 0;
-        p = adj_list[i];
-        while (p != NULL) {
-            deg++;
-            p = p->next;
-        }
-        cout << "\n\n" << i << "\t\t" << deg << "\n\n";
-    }
-}
+    cout << "Enter number of edges : ";
+    cin >> m;
 
-void Graph::dfs() {
-    int sv, num;
-    node *t;
-    cout << "Enter starting vertex: ";
-    cin >> sv;
-    int visited[10] = {0};
-    s.push(sv);
-    while (!s.empty()) {
-        num = s.top();
-        s.pop();
-        if (visited[num] == 0) {
-            cout << num << " ";
-            visited[num] = 1;
-        }
-        t = adj_list[num];
-        while (t != NULL) {
-            if (visited[t->vertex] == 0)
-                s.push(t->vertex);
-            t = t->next;
-        }
+    cout << "\nEDGES :\n";
+    for (k = 1; k <= m; k++)
+    {
+        cin >> i >> j;
+        cost[i][j] = 1;
+        cost[j][i] = 1;
     }
-    cout << endl;
-}
 
-void Graph::bfs() {
-    int sv, num;
-    node *t;
-    cout << "Enter starting vertex: ";
-    cin >> sv;
-    int visited[10] = {0};
-    q.push(sv);
-    while (!q.empty()) {
-        num = q.front();
-        q.pop();
-        if (visited[num] == 0) {
-            cout << num << " ";
-            visited[num] = 1;
+    //display function
+    cout << "The adjacency matrix of the graph is : " << endl;
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            cout << " " << cost[i][j];
         }
-        t = adj_list[num];
-        while (t != NULL) {
-            if (visited[t->vertex] == 0)
-                q.push(t->vertex);
-            t = t->next;
-        }
+        cout << endl;
     }
-    cout << endl;
-}
 
-int main() {
-    Graph obj;
-    obj.create();
-    cout << "DFS Traversal: ";
-    obj.dfs();
-    cout << "BFS Traversal: ";
-    obj.bfs();
+    cout << "Enter initial vertex : ";
+    cin >> v;
+    cout << "The BFS of the Graph is\n";
+    cout << v<<endl;
+    visited[v] = 1;
+    k = 1;
+    while (k < n)
+    {
+        for (j = 1; j <= n; j++)
+            if (cost[v][j] != 0 && visited[j] != 1 && visit[j] != 1)
+            {
+                visit[j] = 1;
+                qu[rear++] = j;
+            }
+        v = qu[front++];
+        cout << v << " ";
+        k++;
+        visit[v] = 0;
+        visited[v] = 1;
+    }
+
+    cout <<endl<<"Enter initial vertex : ";
+    cin >> v;
+    cout << "The DFS of the Graph is\n";
+    cout << v<<endl;
+    visited[v] = 1;
+    k = 1;
+    while (k < n)
+    {
+        for (j = n; j >= 1; j--)
+            if (cost[v][j] != 0 && visited1[j] != 1 && visit1[j] != 1)
+            {
+                visit1[j] = 1;
+                stk[top] = j;
+                top++;
+            }
+        v = stk[--top];
+        cout << v << " ";
+        k++;
+        visit1[v] = 0;
+        visited1[v] = 1;
+    }
+
     return 0;
 }
